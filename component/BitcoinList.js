@@ -17,8 +17,7 @@ var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 === r2});
 class BitcoinList extends Component {
   constructor(props) {
     super(props);
-
-    console.ignoredYellowBox = ["Setting a timer"];
+    
     this.state = {
       selectedMoneyIds: [],
       active: false,
