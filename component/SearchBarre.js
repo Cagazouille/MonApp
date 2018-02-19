@@ -17,12 +17,14 @@ class SearchBarre extends Component {
     if (text == "") {
       return this.setState({ search: null });
     }
-    this.props.obj.setState({ search: text,
-          dataSource: this.state.dataSource.cloneWithRows(this.props.data)});
-    console.log("text");
+    //this.props.obj.setState({ search: text,
+    //      dataSource: this.state.dataSource.cloneWithRows(this.props.data)});
+    this.props.obj.onChangeText(text);
+/*    console.log("text");
     console.log(this.props.obj.state.text);
     console.log("-");
     console.log(text);
+    */
   }
 
   onFocus(text) {
@@ -55,7 +57,7 @@ const styles = {
   containerSearch: {
     borderWidth: 0.8,
     borderColor: "white",
-    width: "65%",
+    width: "90%",
     marginLeft: 15,
     marginTop: 10,
   },
@@ -63,7 +65,7 @@ const styles = {
     marginLeft: 30
   },
   containerListeView: {
-    width: "80%"
+    width: "100%"
   },
 };
 
