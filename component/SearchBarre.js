@@ -13,24 +13,6 @@ import {
 } from "react-native";
 
 class SearchBarre extends Component {
-  onChangeText(text) {
-    if (text == "") {
-      return this.setState({ search: null });
-    }
-    //this.props.obj.setState({ search: text,
-    //      dataSource: this.state.dataSource.cloneWithRows(this.props.data)});
-    this.props.obj.onChangeText(text);
-/*    console.log("text");
-    console.log(this.props.obj.state.text);
-    console.log("-");
-    console.log(text);
-    */
-  }
-
-  onFocus(text) {
-    this.props.obj.setState({ search: text });
-    this.props.obj.toggleClass.bind(this.props.obj, record.rank);
-  }
 
   render() {
     let button = <View />;
@@ -43,6 +25,7 @@ class SearchBarre extends Component {
               editable={true}
               maxLength={40}
               onChangeText={text => this.props.obj.onChangeText(text)}
+              onKeyPress={text => this.props.obj.onClearText(text)}
 
               placeholder="Search..."
             />

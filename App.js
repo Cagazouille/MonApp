@@ -17,6 +17,11 @@ const Navigation = StackNavigator(
 );
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    console.disableYellowBox = true;
+  }
+
   render() {
     return <Navigation />;
   }

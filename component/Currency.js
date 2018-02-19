@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
+  LayoutAnimation,
   ListView,
   TouchableHighlight,
   ImageBackground
@@ -27,15 +28,28 @@ class Currency extends Component {
 
     this.state = {
       selectedMoneyIds: [],
+      changed: false,
       active: false,
       isLoading: true,
       selected: 1,
       dataSource: ds.cloneWithRows(["row 1", "row 2"]),
       menu: false
     };
+    this.handler = this.handler.bind(this);
+    this.CustomLayoutLinear = {
+      duration: 100,
+      create: {
+        type: LayoutAnimation.Types.linear,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.curveEaseInEaseOut,
+      },
+    };
   }
 
   static navigationOptions = { title: "Welcome", header: null };
+
 
   componentDidMount() {
     this.getData().then(data => {
@@ -47,6 +61,12 @@ class Currency extends Component {
       });
     });
   }
+
+  handler() {
+  this.setState({
+    changed: true
+  });
+}
 
   async getData() {
     console.log("Requete API des DATA :");
@@ -61,11 +81,12 @@ class Currency extends Component {
       }
     );
     const json = await response.json();
-    console.log("     DONE");
+    console.log("DONE");
     return json;
   }
 
   toggleMenu() {
+    LayoutAnimation.configureNext(this.CustomLayoutLinear);
     currentState = this.state.menu;
     this.setState({ menu: !currentState });
   }
@@ -81,12 +102,16 @@ class Currency extends Component {
         source={require("./img/background.png")}
       >
         <View style={styles.container}>
-            <View style={styles.containerList}>
-              <Search list={this.state.dataSource} data={this.state.data} />
+
+            <View
+              style={this.state.menu === true ? styles.containerListOFF : styles.containerList}>
+              <Search list={this.state.dataSource} data={this.state.data} handler = {this.handler}/>
+            </View>
 
               <View
                 style={this.state.menu === true ? styles.menu : styles.null}
               >
+                <View style={styles.menuRight}>
                 <TouchableHighlight onPress={this.toggleMenu.bind(this)}>
                   <Image
                     style={styles.iconMenu}
@@ -96,18 +121,10 @@ class Currency extends Component {
                     }}
                   />
                 </TouchableHighlight>
+              </View>
+                <View style={styles.containerMenuTitles}>
                 <Text>Home</Text>
               </View>
-
-              <TouchableHighlight onPress={this.toggleMenu.bind(this)}>
-                <Image
-                  style={styles.iconMenu}
-                  source={{
-                    uri:
-                      "https://d30y9cdsu7xlg0.cloudfront.net/png/462023-200.png"
-                  }}
-                />
-              </TouchableHighlight>
           </View>
         </View>
       </ImageBackground>
@@ -122,17 +139,26 @@ const styles = {
     marginLeft: 0
   },
   null: {
-    display: "none",
+    width: 100
   },
   menu: {
     width: 100,
   },
   container: {
     top: 35,
-    flexDirection: "column"
+    flexDirection: "row"
   },
   containerList: {
-    flexDirection: "row",
+    width: "90%",
+  },
+  containerListOFF: {
+    width: "70%",
+  },
+  containerMenu: {
+  },
+  containerMenuTitles: {
+    marginLeft: 40,
+    backgroundColor: 'rgba(0,0,0, 0)',
   },
 };
 

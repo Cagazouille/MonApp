@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   ListView,
   TouchableHighlight,
+  LayoutAnimation,
   TextInput
 } from "react-native";
 
@@ -27,20 +28,38 @@ class Search extends Component {
       selected: 1,
       active: false,
       changed: false,
-      text: "Useless Placeholder",
       dataSource: this.props.list
+    };
+
+    this.CustomLayoutLinear = {
+      duration: 100,
+      create: {
+        type: LayoutAnimation.Types.linear,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.curveEaseInEaseOut,
+      },
     };
   }
 
-  onChangeText(text) {
-    console.log("laaaaa");
-    if (text == "") {
-        return (this.setState({search: null}));
+  /*
+  * When SearchBar is empty, reload all Moneys in List
+  */
+  onClearText(text) {
+    if (text.nativeEvent.key == "Backspace") {
+      newdatasource = this.state.dataSource.cloneWithRows(this.props.data);
+      this.setState({search: null,
+      dataSource: newdatasource});
     }
-    this.setState({search: text,
-    dataSource: this.state.dataSource.cloneWithRows(this.props.data)});
-    console.log("text -" + text);
-    console.log(this.state.search);
+
+  }
+
+  onChangeText(text) {
+    newdatasource = this.state.dataSource.cloneWithRows(this.props.data);
+    this.setState({search: text.toLowerCase(),
+    dataSource: newdatasource});
+    this.props.handler();
   }
 
   renderRow(record) {
@@ -100,8 +119,7 @@ class Search extends Component {
             >
               1 day %: {record.percent_change_24h}$
             </Text>
-            <Text
-              style={[
+            <Text style={[
                 styles.infosText,
                 record.percent_change_7d.indexOf("-")
                   ? styles.green
@@ -117,11 +135,13 @@ class Search extends Component {
   }
 
   toggleClass(rank) {
+    LayoutAnimation.configureNext(this.CustomLayoutLinear);
     currentState = this.state.active;
     rank = rank === this.state.selected ? null : rank;
+    newdatasource = this.state.dataSource.cloneWithRows(this.props.data);
     this.setState({
       active: !currentState,
-      dataSource: this.state.dataSource.cloneWithRows(this.props.data),
+      dataSource: newdatasource,
       selected: rank
     });
   }
@@ -132,6 +152,7 @@ class Search extends Component {
         <View>
         <SearchBarre
           obj={this}
+          handler = {this.props.handler}
         />
       </View>
         <ListView
@@ -150,7 +171,7 @@ const styles = {
     height: 10
   },
   size: {
-    width: "80%",
+    width: "100%",
   },
   liste: {
     height: 80,
